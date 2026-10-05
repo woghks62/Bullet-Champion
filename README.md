@@ -28,7 +28,7 @@ Unity로 개발한 2D 턴제 슈팅 전략 게임입니다.
 4. 전투 보상을 획득한 뒤 다시 상점으로 이동하여 캐릭터를 강화합니다.
 
 <p align="center">
-<img width="300" height="167" alt="image" src="https://github.com/user-attachments/assets/ec22e0e5-8e4b-449a-ac19-3570e831070b" width="40%" / >
+<img width="300" height="167" alt="image" src="https://github.com/user-attachments/assets/ec22e0e5-8e4b-449a-ac19-3570e831070b" width="40%"/ >
 <img width="299" height="167" alt="image" src="https://github.com/user-attachments/assets/970fc93d-213f-4920-ac0f-5aeead6b3ccc" width="40%"/>
 
 </p>
@@ -103,23 +103,19 @@ for (int i = 0; i < itemCount; i++)
 ```csharp
 public void OnBuyButtonClicked(ShopItem item, GameObject itemObject)
 {
-    // 인벤토리 공간 확인
-    if (InventoryManager.InventoryInstance.IsInventoryFull())
-        return;
+    if (item != null && !InventoryManager.InventoryInstance.ItemFull)
+    {
+        if (CanAffordItem(item.price))
+        {
+            GameManager.instance.playerMoney -= item.price;
+            item.MarkAsBought();
 
-    // 보유 골드 확인
-    if (!CanAffordItem(item.price))
-        return;
+            InventoryManager.InventoryInstance.AddItemToInventory(item);
+            UpdatePlayerMoneyUI();
 
-    // 구매 처리
-    GameManager.instance.playerMoney -= item.price;
-    item.MarkAsBought();
-
-    // 인벤토리 연동
-    InventoryManager.InventoryInstance.AddItemToInventory(item);
-    UpdatePlayerMoneyUI();
-
-    Destroy(itemObject);
+            Destroy(itemObject);
+        }
+    }
 }
 ```
 구매가 완료된 `ShopItem`을 `InventoryManager`에 전달하는 방식으로 상점 시스템과 인벤토리 시스템을 연동했습니다.
@@ -253,4 +249,4 @@ public void MarkAsBought()
 - 원본 프로젝트는 팀원들과 **Unity Version Control (Plastic SCM)**을 사용하여 개발했습니다.
 - GitHub 저장소는 프로젝트 종료 후 포트폴리오 공개를 위해 별도로 구성했기 때문에 실제 개발 당시의 커밋 기록은 포함되어 있지 않습니다.
 - 외부에서 제공받거나 다운로드한 일부 에셋 및 사운드 파일은 재배포 문제를 고려하여 저장소에서 제외했습니다.
-- 따라서 저장소를 새로 Clone할 경우 일부 이미지, 사운드 등의 참조가 누락될 수 있습니다.
+- 따라서 저장소를 새로 Clone할 경우 일부 외부 에셋 및 사운드 등의 참조가 누락될 수 있습니다.
